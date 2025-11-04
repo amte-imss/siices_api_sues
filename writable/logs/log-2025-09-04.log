@@ -1,0 +1,50 @@
+ERROR - 2025-09-04 18:09:11 --> mysqli_sql_exception: Unknown column 'FEC_INI' in 'field list' in C:\xampp\htdocs\api_contratacion\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\api_contratacion\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT FEC_INI,...', 0)
+#1 C:\xampp\htdocs\api_contratacion\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT FEC_INI,...')
+#2 C:\xampp\htdocs\api_contratacion\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT FEC_INI,...')
+#3 C:\xampp\htdocs\api_contratacion\app\Models\controlTiempoModel.php(14): CodeIgniter\Database\BaseConnection->query('SELECT FEC_INI,...')
+#4 C:\xampp\htdocs\api_contratacion\app\Controllers\Api2.php(33): App\Models\controlTiempoModel->obtenerTiempo()
+#5 C:\xampp\htdocs\api_contratacion\system\CodeIgniter.php(933): App\Controllers\Api2->obtenerFila()
+#6 C:\xampp\htdocs\api_contratacion\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Api2))
+#7 C:\xampp\htdocs\api_contratacion\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\api_contratacion\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\api_contratacion\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\api_contratacion\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2025-09-04 18:09:11 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'FEC_INI' in 'field list'
+[Method: POST, Route: api2/obtenerFila]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 APPPATH\Models\controlTiempoModel.php(14): CodeIgniter\Database\BaseConnection->query('SELECT FEC_INI, FEC_MAX, STA_CVE FROM tiempos_api WHERE INS_CNF_CVE = 1')
+ 2 APPPATH\Controllers\Api2.php(33): App\Models\controlTiempoModel->obtenerTiempo()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Api2->obtenerFila()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Api2))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-09-04 18:09:11 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'FEC_INI' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT FEC_INI, FEC_MAX, STA_CVE FROM tiempos_api WHERE INS_CNF_CVE = 1')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT FEC_INI, FEC_MAX, STA_CVE FROM tiempos_api WHERE INS_CNF_CVE = 1')
+ 3 APPPATH\Models\controlTiempoModel.php(14): CodeIgniter\Database\BaseConnection->query('SELECT FEC_INI, FEC_MAX, STA_CVE FROM tiempos_api WHERE INS_CNF_CVE = 1')
+ 4 APPPATH\Controllers\Api2.php(33): App\Models\controlTiempoModel->obtenerTiempo()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Api2->obtenerFila()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Api2))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-09-04 18:09:11 --> [Caused by] mysqli_sql_exception: Unknown column 'FEC_INI' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT FEC_INI, FEC_MAX, STA_CVE FROM tiempos_api WHERE INS_CNF_CVE = 1', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT FEC_INI, FEC_MAX, STA_CVE FROM tiempos_api WHERE INS_CNF_CVE = 1')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT FEC_INI, FEC_MAX, STA_CVE FROM tiempos_api WHERE INS_CNF_CVE = 1')
+ 4 APPPATH\Models\controlTiempoModel.php(14): CodeIgniter\Database\BaseConnection->query('SELECT FEC_INI, FEC_MAX, STA_CVE FROM tiempos_api WHERE INS_CNF_CVE = 1')
+ 5 APPPATH\Controllers\Api2.php(33): App\Models\controlTiempoModel->obtenerTiempo()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Api2->obtenerFila()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Api2))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

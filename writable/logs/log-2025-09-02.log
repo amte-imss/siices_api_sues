@@ -1,0 +1,50 @@
+CRITICAL - 2025-09-02 21:39:33 --> ErrorException: Undefined array key "fecha_inicio"
+[Method: POST, Route: api2/obtenerFila]
+in APPPATH\Models\controlTiempoModel.php on line 19.
+ 1 APPPATH\Models\controlTiempoModel.php(19): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "fecha_inicio"', 'C:\\xampp\\htdocs\\api_contratacion\\app\\Models\\controlTiempoModel.php', 19)
+ 2 APPPATH\Controllers\Api2.php(33): App\Models\controlTiempoModel->obtenerTiempo()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Api2->obtenerFila()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Api2))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-09-02 22:02:18 --> ParseError: syntax error, unexpected token ";", expecting "]"
+[Method: POST, Route: api2/obtenerFila]
+in APPPATH\Models\insertaLogsModel.php on line 13.
+ 1 SYSTEMPATH\Autoloader\Autoloader.php(295): CodeIgniter\Autoloader\Autoloader->includeFile('C:\\xampp\\htdocs\\api_contratacion\\app\\Models\\insertaLogsModel.php')
+ 2 SYSTEMPATH\Autoloader\Autoloader.php(271): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Models\\insertaLogsModel')
+ 3 APPPATH\Models\contratacionModel2.php(19): CodeIgniter\Autoloader\Autoloader->loadClass('App\\Models\\insertaLogsModel')
+ 4 APPPATH\Controllers\Api2.php(52): App\Models\contratacionModel2->obtenerPorCampos('CIFRHS - ENARM', 'DIRECTA', 'NACIONAL', 'LOOA941204HOCPJB07')
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Api2->obtenerFila()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Api2))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-09-02 22:03:48 --> ParseError: syntax error, unexpected token "}", expecting ";"
+[Method: POST, Route: api2/obtenerFila]
+in APPPATH\Models\insertaLogsModel.php on line 20.
+ 1 SYSTEMPATH\Autoloader\Autoloader.php(295): CodeIgniter\Autoloader\Autoloader->includeFile('C:\\xampp\\htdocs\\api_contratacion\\app\\Models\\insertaLogsModel.php')
+ 2 SYSTEMPATH\Autoloader\Autoloader.php(271): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Models\\insertaLogsModel')
+ 3 APPPATH\Models\contratacionModel2.php(19): CodeIgniter\Autoloader\Autoloader->loadClass('App\\Models\\insertaLogsModel')
+ 4 APPPATH\Controllers\Api2.php(52): App\Models\contratacionModel2->obtenerPorCampos('CIFRHS - ENARM', 'DIRECTA', 'NACIONAL', 'LOOA941204HOCPJB07')
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Api2->obtenerFila()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Api2))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-09-02 22:14:25 --> ParseError: syntax error, unexpected token ";", expecting "]"
+[Method: POST, Route: api2/obtenerFila]
+in APPPATH\Models\insertaLogsModel.php on line 20.
+ 1 SYSTEMPATH\Autoloader\Autoloader.php(295): CodeIgniter\Autoloader\Autoloader->includeFile('C:\\xampp\\htdocs\\api_contratacion\\app\\Models\\insertaLogsModel.php')
+ 2 SYSTEMPATH\Autoloader\Autoloader.php(271): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Models\\insertaLogsModel')
+ 3 APPPATH\Models\contratacionModel2.php(19): CodeIgniter\Autoloader\Autoloader->loadClass('App\\Models\\insertaLogsModel')
+ 4 APPPATH\Controllers\Api2.php(52): App\Models\contratacionModel2->obtenerPorCampos('CIFRHS - ENARM', 'DIRECTA', 'NACIONAL', 'LOOA941204HOCPJB07')
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Api2->obtenerFila()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Api2))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

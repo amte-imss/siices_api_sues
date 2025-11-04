@@ -1,0 +1,43 @@
+ERROR - 2025-09-11 19:22:11 --> entra debug
+CRITICAL - 2025-09-11 19:22:11 --> ParseError: syntax error, unexpected single-quoted string ",h.del_nom)) as DELEGACION, ca...", expecting ")"
+[Method: POST, Route: activosPosgrado/obtenerFila]
+in APPPATH\Models\activosPosgradoModel.php on line 20.
+ 1 SYSTEMPATH\Autoloader\Autoloader.php(295): CodeIgniter\Autoloader\Autoloader->includeFile('C:\\xampp\\htdocs\\api_siices\\app\\Models\\activosPosgradoModel.php')
+ 2 SYSTEMPATH\Autoloader\Autoloader.php(271): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Models\\activosPosgradoModel')
+ 3 APPPATH\Controllers\ActivosPosgrado.php(14): CodeIgniter\Autoloader\Autoloader->loadClass('App\\Models\\activosPosgradoModel')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-09-11 19:25:42 --> Error: Class "App\Models\activosPosgradoModel" not found
+[Method: POST, Route: activosPosgrado/obtenerFila]
+in APPPATH\Controllers\ActivosPosgrado.php on line 14.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-09-11 19:26:42 --> Error: Undefined constant "App\Controllers\CONTRON_IP"
+[Method: POST, Route: activosPosgrado/obtenerFila]
+in APPPATH\Controllers\ActivosPosgrado.php on line 26.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-09-11 19:27:02 --> [{"pro_ano":"2025","categoria":"CIFRHS - ENARM","DELEGACION":"AGUASCALIENTES","TIPO_ESPECIALIDAD":"DIRECTA","ESPECIALIDAD":"ANESTESIOLOGIA","CLUES":"ASIMS000021","SEDE_ACADEMICA":"HOSPITAL GENERAL DE ZONA 1 AGUASCALIENTES","NIVEL_DE_ATENCION":"2","DELEGACION_UMAE":"DELEGACION","GRADO":"1","CURP":"CAHA971206MZSSRN09","GENERO":"MUJER","FOLIO_IMSS":"595728","AP_PATERNO":"CASTRO","AP_MATERNO":"HERNANDEZ","NOMBRE":"ANA GEORGINA","TIPO":"NACIONAL","NACIONALIDAD":"MEXICANO\/A","CORREO":"georginacastro03@gmail.com","CELULAR":"4921606429","SEDE":"HOSPITAL GENERAL DE ZONA 1 AGUASCALIENTES","SUBSEDE":"HOSPITAL GENERAL DE ZONA 1 AGUASCALIENTES","AVAL_ACADEMICO":"UNIVERSIDAD AUTONOMA DE AGUASCALIENTES","MATRICULA":null,"CONTRATACION":null,"VUELTA":"1","EDO_NACIMIENTO":"ZACATECAS","NOTA":""}]
+CRITICAL - 2025-09-11 19:27:02 --> ErrorException: Undefined variable $resultado
+[Method: POST, Route: activosPosgrado/obtenerFila]
+in APPPATH\Models\activosPosgradoModel.php on line 114.
+ 1 APPPATH\Models\activosPosgradoModel.php(114): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $resultado', 'C:\\xampp\\htdocs\\api_siices\\app\\Models\\activosPosgradoModel.php', 114)
+ 2 APPPATH\Controllers\ActivosPosgrado.php(88): App\Models\activosPosgradoModel->obtenerPorCampos('2025', null, null, null, null)
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
