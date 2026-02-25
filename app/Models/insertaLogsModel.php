@@ -6,13 +6,14 @@ use CodeIgniter\Model;
 
 class insertaLogsModel extends Model{
 
-    public function guardaLog($categoria, $tipo_especialidad, $tipo, $curp = null)
+    public function guardaLog($anio=null, $categoria=null, $delegacion=null, $especialidad=null, $genero=null)
     { 
         $campos=[
+            "anio" => $anio,
             "categoria" => $categoria,
-            "tipo_especialidad" => $tipo_especialidad,
-            "tipo" => $tipo,
-            "curp" => $curp
+            "delegacion" => $delegacion,
+            "especialidad" => $especialidad,
+            "genero" => $genero
         ];
 
         $data = [
@@ -21,7 +22,7 @@ class insertaLogsModel extends Model{
         ];
 
         $db = \Config\Database::connect();
-        $builder = $db->table('logs_api');
+        $builder = $db->table('srm_con_per_log_api_arc');
         $builder->insert($data);
         return TRUE;
     }

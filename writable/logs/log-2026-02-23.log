@@ -1,0 +1,58 @@
+ERROR - 2026-02-23 18:30:36 --> mysqli_sql_exception: Table 'edumed2.logs_api' doesn't exist in C:\xampp\htdocs\api_siices\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\api_siices\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `lo...', 0)
+#1 C:\xampp\htdocs\api_siices\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `lo...')
+#2 C:\xampp\htdocs\api_siices\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `lo...')
+#3 C:\xampp\htdocs\api_siices\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `lo...', Array, false)
+#4 C:\xampp\htdocs\api_siices\app\Models\insertaLogsModel.php(26): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\api_siices\app\Models\activosPosgradoModel.php(116): App\Models\insertaLogsModel->guardaLog('2025', 'CIFRHS - ENARM', 'AGUASCALIENTES', 'ANESTESIOLOGIA', 'MUJER')
+#6 C:\xampp\htdocs\api_siices\app\Controllers\ActivosPosgrado.php(58): App\Models\activosPosgradoModel->obtenerPorCampos('2025', 'CIFRHS - ENARM', 'AGUASCALIENTES', 'ANESTESIOLOGIA', 'MUJER')
+#7 C:\xampp\htdocs\api_siices\system\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+#8 C:\xampp\htdocs\api_siices\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+#9 C:\xampp\htdocs\api_siices\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 C:\xampp\htdocs\api_siices\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#11 C:\xampp\htdocs\api_siices\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 C:\xampp\htdocs\api_siices\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 {main}
+CRITICAL - 2026-02-23 18:30:36 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'edumed2.logs_api' doesn't exist
+[Method: POST, Route: activosPosgrado/obtenerFila]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `logs_api` (`fecha_consulta`, `campos`) VALUES (:fecha_consulta:, :campos:)', [...], false)
+ 2 APPPATH\Models\insertaLogsModel.php(26): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 APPPATH\Models\activosPosgradoModel.php(116): App\Models\insertaLogsModel->guardaLog('2025', 'CIFRHS - ENARM', 'AGUASCALIENTES', 'ANESTESIOLOGIA', 'MUJER')
+ 4 APPPATH\Controllers\ActivosPosgrado.php(58): App\Models\activosPosgradoModel->obtenerPorCampos('2025', 'CIFRHS - ENARM', 'AGUASCALIENTES', 'ANESTESIOLOGIA', 'MUJER')
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-23 18:30:36 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'edumed2.logs_api' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `logs_api` (`fecha_consulta`, `campos`) VALUES (\'2026-02-23 18:30:36\', \'{\\"anio\\":\\"2025\\",\\"categoria\\":\\"CIFRHS - ENARM\\",\\"delegacion\\":\\"AGUASCALIENTES\\",\\"especialidad\\":\\"ANESTESIOLOGIA\\",\\"genero\\":\\"MUJER\\"}\')')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `logs_api` (`fecha_consulta`, `campos`) VALUES (\'2026-02-23 18:30:36\', \'{\\"anio\\":\\"2025\\",\\"categoria\\":\\"CIFRHS - ENARM\\",\\"delegacion\\":\\"AGUASCALIENTES\\",\\"especialidad\\":\\"ANESTESIOLOGIA\\",\\"genero\\":\\"MUJER\\"}\')')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `logs_api` (`fecha_consulta`, `campos`) VALUES (:fecha_consulta:, :campos:)', [...], false)
+ 4 APPPATH\Models\insertaLogsModel.php(26): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 APPPATH\Models\activosPosgradoModel.php(116): App\Models\insertaLogsModel->guardaLog('2025', 'CIFRHS - ENARM', 'AGUASCALIENTES', 'ANESTESIOLOGIA', 'MUJER')
+ 6 APPPATH\Controllers\ActivosPosgrado.php(58): App\Models\activosPosgradoModel->obtenerPorCampos('2025', 'CIFRHS - ENARM', 'AGUASCALIENTES', 'ANESTESIOLOGIA', 'MUJER')
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-23 18:30:36 --> [Caused by] mysqli_sql_exception: Table 'edumed2.logs_api' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `logs_api` (`fecha_consulta`, `campos`) VALUES (\'2026-02-23 18:30:36\', \'{\\"anio\\":\\"2025\\",\\"categoria\\":\\"CIFRHS - ENARM\\",\\"delegacion\\":\\"AGUASCALIENTES\\",\\"especialidad\\":\\"ANESTESIOLOGIA\\",\\"genero\\":\\"MUJER\\"}\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `logs_api` (`fecha_consulta`, `campos`) VALUES (\'2026-02-23 18:30:36\', \'{\\"anio\\":\\"2025\\",\\"categoria\\":\\"CIFRHS - ENARM\\",\\"delegacion\\":\\"AGUASCALIENTES\\",\\"especialidad\\":\\"ANESTESIOLOGIA\\",\\"genero\\":\\"MUJER\\"}\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `logs_api` (`fecha_consulta`, `campos`) VALUES (\'2026-02-23 18:30:36\', \'{\\"anio\\":\\"2025\\",\\"categoria\\":\\"CIFRHS - ENARM\\",\\"delegacion\\":\\"AGUASCALIENTES\\",\\"especialidad\\":\\"ANESTESIOLOGIA\\",\\"genero\\":\\"MUJER\\"}\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `logs_api` (`fecha_consulta`, `campos`) VALUES (:fecha_consulta:, :campos:)', [...], false)
+ 5 APPPATH\Models\insertaLogsModel.php(26): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 APPPATH\Models\activosPosgradoModel.php(116): App\Models\insertaLogsModel->guardaLog('2025', 'CIFRHS - ENARM', 'AGUASCALIENTES', 'ANESTESIOLOGIA', 'MUJER')
+ 7 APPPATH\Controllers\ActivosPosgrado.php(58): App\Models\activosPosgradoModel->obtenerPorCampos('2025', 'CIFRHS - ENARM', 'AGUASCALIENTES', 'ANESTESIOLOGIA', 'MUJER')
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

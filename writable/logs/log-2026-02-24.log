@@ -1,0 +1,33 @@
+CRITICAL - 2026-02-24 01:07:02 --> CodeIgniter\HTTP\Exceptions\HTTPException: Failed to parse JSON string. Error: Syntax error
+[Method: POST, Route: activosPosgrado/obtenerFila]
+in SYSTEMPATH\HTTP\IncomingRequest.php on line 534.
+ 1 SYSTEMPATH\HTTP\IncomingRequest.php(534): CodeIgniter\HTTP\Exceptions\HTTPException::forInvalidJSON('Syntax error')
+ 2 APPPATH\Controllers\ActivosPosgrado.php(41): CodeIgniter\HTTP\IncomingRequest->getJSON(true)
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-24 18:37:21 --> Error: Undefined constant "App\Controllers\CI_VERSION"
+[Method: POST, Route: activosPosgrado/obtenerFila]
+in APPPATH\Controllers\ActivosPosgrado.php on line 12.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\ActivosPosgrado->obtenerFila()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\ActivosPosgrado))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-24 18:38:55 --> ParseError: syntax error, unexpected token ":", expecting "]"
+[Method: POST, Route: activosPosgrado/obtenerFila]
+in APPPATH\Controllers\ActivosPosgrado.php on line 13.
+ 1 SYSTEMPATH\Autoloader\Autoloader.php(295): CodeIgniter\Autoloader\Autoloader->includeFile('C:\\xampp\\htdocs\\api_siices\\app\\Controllers\\ActivosPosgrado.php')
+ 2 SYSTEMPATH\Autoloader\Autoloader.php(271): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Controllers\\ActivosPosgrado')
+ 3 [internal function]: CodeIgniter\Autoloader\Autoloader->loadClass('App\\Controllers\\ActivosPosgrado')
+ 4 SYSTEMPATH\CodeIgniter.php(885): class_exists('\\App\\Controllers\\ActivosPosgrado', true)
+ 5 SYSTEMPATH\CodeIgniter.php(494): CodeIgniter\CodeIgniter->startController()
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2026-02-24 18:39:47 --> entra debug version 4.6.3

@@ -113,7 +113,7 @@ class activosPosgradoModel extends Model
 
         if(CONTROL_LOGS){
             $logs = new insertaLogsModel();
-            $logs -> guardaLog($categoria, $tipo_especialidad, $tipo, $curp);
+            $logs -> guardaLog($anio, $categoria, $delegacion, $especialidad, $genero);
         }
 
         /*$resultado = array_filter($resultados, function ($row) use ($categoria, $tipo_especialidad, $tipo, $curp) {

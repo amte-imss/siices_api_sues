@@ -10,6 +10,8 @@ class ActivosPosgrado extends ResourceController
 {
     public function obtenerFila()
     {//log_message('error', 'entra debug');
+    //log_message('error', 'entra debug version ' . \CodeIgniter\CodeIgniter::CI_VERSION);
+
         helper('text');
         $modelo = new activosPosgradoModel();
         
