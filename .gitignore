@@ -1,0 +1,39 @@
+# Composer dependencies
+/vendor/
+
+# PHPUnit
+/phpunit.xml
+
+# CodeIgniter writable directories
+writable/
+
+# Environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+logs/
+
+# Cache
+cache/
+
+# Uploaded files
+uploads/
+
+# Temporary files
+*.tmp
+*.log
+
+# PHPStorm
+*.iml
+
+# Node modules (if any)
+node_modules/
