@@ -21,7 +21,7 @@ defined('USUARIO') || define('USUARIO', 'IMSS_2025'); //Definición del usuario 
 defined('PASSWORD') || define('PASSWORD', 'IMSS_CONTRATACION_2025');  // Definición de contraseña
 defined('INS_CNF_CVE') || define('INS_CNF_CVE', 1); // Definición de la clave del proyecto	
 
-defined('CONTROL_PASS') || define('CONTROL_PASS', false); //Control para verificacion de Contraseña. True realiza la verificación
+defined('CONTROL_PASS') || define('CONTROL_PASS', true); //Control para verificacion de Contraseña. True realiza la verificación
 defined('CONTROL_IP') || define('CONTROL_IP', false); //Control para verificacion de IP. True realiza la verificación
 defined('CONTROL_FECHA') || define('CONTROL_FECHA', false); //Control para verificacion de la tabla de fecha del proyecto. True realiza la verificación
 defined('CONTROL_LOGS') || define('CONTROL_LOGS', false); //Control para guardar logs. True realiza el insert del log

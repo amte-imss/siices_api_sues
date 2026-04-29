@@ -13,7 +13,7 @@ class activosPosgradoModel extends Model
     {
         $db = \Config\Database::connect();
         
-        $builder = $db->table('srm_per_reg_arc a');
+        $builder = $db->table('srm_per_reg_arc a'); //u.desc_tc AS CONTRATACION, 
 
         $builder->select(
             "a.pro_ano, 
@@ -40,7 +40,7 @@ class activosPosgradoModel extends Model
             r.sde_nom AS SUBSEDE, 
             w.aval_nom AS AVAL_ACADEMICO, 
             z.ims_mat AS MATRICULA, 
-            u.desc_tc AS CONTRATACION, 
+            u.IMS_CNT_TIP_NOM AS CONTRATACION, 
             a.vlt_num AS VUELTA, 
             v.edo_nom AS EDO_NACIMIENTO, 
             CASE WHEN n.cup_ocu_aud=99 THEN 'se queda en subsede ciclo 2021' ELSE '' END AS NOTA"
@@ -69,30 +69,38 @@ class activosPosgradoModel extends Model
         $builder->join('srm_per_aval_arc w', 'w.ads_cve=f.ads_cve');
 
         $builder->join('ims_per_nom_arc z', 'z.curp=a.curp', 'left');
-        $builder->join('personal.tbl_tipo_contratacion_cat u', 'u.cve_tc=z.ims_cnt_tip_cve', 'left');
+        //$builder->join('personal.tbl_tipo_contratacion_cat u', 'u.cve_tc=z.ims_cnt_tip_cve', 'left');
+        $builder->join('ims_cnt_tip_cat u', 'u.ims_cnt_tip_cve=z.ims_cnt_tip_cve', 'left');
         
         $builder->where(['f.grd_num !=' => 0, 'j.eml_tip_cve' => 1]);
 
         //$builder->limit(5);
 
         if(!is_null($anio)){
-            $builder->where('a.pro_ano', $anio);
+            $builder->whereIn('a.pro_ano', $anio);
         }
 
         if(!is_null($categoria)){
-            $builder->where('f.mta_ctg_nom', $categoria);
+            $builder->whereIn('f.mta_ctg_nom', $categoria);
         }
 
-        if(!is_null($delegacion)){
-            $builder->where("TRIM(CONCAT(i.edo_nom, ' ', h.del_nom)) = '{$delegacion}'", null, false);
-        }
+        /*if(!is_null($delegacion)){
+            $builder->whereIn("TRIM(CONCAT(i.edo_nom, ' ', h.del_nom)) = '{$delegacion}'", null, false);
+        }*/
+        
+        if (!empty($delegacion) && is_array($delegacion)) {
+            $builder->whereIn(
+                "TRIM(CONCAT(i.edo_nom, ' ', h.del_nom))",
+                $delegacion
+            );
+        }    
 
         if(!is_null($especialidad)){
-            $builder->where('f.esp_nom', $especialidad);
+            $builder->whereIn('f.esp_nom', $especialidad);
         }
 
         if(!is_null($genero)){
-            $builder->where('m.gnr_nom', $genero);
+            $builder->whereIn('m.gnr_nom', $genero);
         }
         //$builder->where('f.curp', 'CAHA971206MZSSRN09');
 
@@ -143,7 +151,9 @@ class activosPosgradoModel extends Model
             "5"=>"2022",
             "6"=>"2023",
             "7"=>"2024",
-            "8"=>"2025"];
+            "8"=>"2025",
+            "9"=>"2026"
+            ];
         return $anios;
     }
 

@@ -2,18 +2,18 @@
 
 namespace App\Controllers;
 
-use App\Models\activosPosgradoModel;
+use App\Models\egresadosModel;
 use App\Models\controlTiempoModel;
 use CodeIgniter\RESTful\ResourceController;
 
-class ActivosPosgrado extends ResourceController
+class Egresados extends ResourceController
 {
     public function obtenerFila()
     {//log_message('error', 'entra debug');
     //log_message('error', 'entra debug version ' . \CodeIgniter\CodeIgniter::CI_VERSION);
 
         helper('text');
-        $modelo = new activosPosgradoModel();
+        $modelo = new egresadosModel();
         
         if(CONTROL_PASS){
             $usuario = $this->request->getHeaderLine('API-USER');
@@ -48,17 +48,7 @@ class ActivosPosgrado extends ResourceController
             ], 400);
         }
 
-/*        
         $control = $json['control'];
-        $anio = isset($json['anio']) ? $json['anio'] : null;
-        $categoria = isset($json['categoria']) ? $json['categoria'] : null;
-        $delegacion = isset($json['delegacion']) ? $json['delegacion'] : null;
-        $especialidad = isset($json['especialidad']) ? $json['especialidad'] : null;
-        $genero = isset($json['genero']) ? $json['genero'] : null; 
-*/
-
-        $control = $json['control'];
-        //$control = isset($json['control']) ? (is_array($json['control']) ? $json['control'] : [$json['control']]) : null;
         $anio = isset($json['anio']) ? (is_array($json['anio']) ? $json['anio'] : [$json['anio']]) : null;
         $categoria = isset($json['categoria']) ? (is_array($json['categoria']) ? $json['categoria'] : [$json['categoria']]) : null;
         $delegacion = isset($json['delegacion']) ? (is_array($json['delegacion']) ? $json['delegacion'] : [$json['delegacion']]) : null;
