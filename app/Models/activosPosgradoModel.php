@@ -151,9 +151,7 @@ class activosPosgradoModel extends Model
             "5"=>"2022",
             "6"=>"2023",
             "7"=>"2024",
-            "8"=>"2025",
-            "9"=>"2026"
-            ];
+            "8"=>"2025"];
         return $anios;
     }
 

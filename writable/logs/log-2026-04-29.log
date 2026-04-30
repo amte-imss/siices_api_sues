@@ -2485,3 +2485,75 @@ ORDER BY `f`.`cur_ano` DESC, `d`.`esp_nom` DESC, `e`.`per_ap1` DESC, `e`.`per_ap
 10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
 11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
 12 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2026-04-29 19:42:10 --> Error connecting to the database: mysqli_sql_exception: Se produjo un error durante el intento de conexión ya que la parte conectada no respondió adecuadamente tras un periodo de tiempo, o bien se produjo un error en la conexión establecida ya que el host conectado no ha podido responder in C:\xampp\htdocs\api_siices\system\Database\MySQLi\Connection.php:201
+Stack trace:
+#0 C:\xampp\htdocs\api_siices\system\Database\MySQLi\Connection.php(201): mysqli->real_connect('10.250.8.2', 'des', Object(SensitiveParameterValue), 'edumed_api_2', 3306, '', 0)
+#1 C:\xampp\htdocs\api_siices\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 C:\xampp\htdocs\api_siices\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#3 C:\xampp\htdocs\api_siices\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT f.cur_an...', Array, false)
+#4 C:\xampp\htdocs\api_siices\app\Models\egresadosModel.php(78): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\api_siices\app\Controllers\Egresados.php(59): App\Models\egresadosModel->obtenerPorCampos(Array, Array, Array, NULL, NULL)
+#6 C:\xampp\htdocs\api_siices\system\CodeIgniter.php(933): App\Controllers\Egresados->obtenerFila()
+#7 C:\xampp\htdocs\api_siices\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Egresados))
+#8 C:\xampp\htdocs\api_siices\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 C:\xampp\htdocs\api_siices\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#10 C:\xampp\htdocs\api_siices\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#11 C:\xampp\htdocs\api_siices\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#12 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Se produjo un error durante el intento de conexión ya que la parte conectada no respondió adecuadamente tras un periodo de tiempo, o bien se produjo un error en la conexión establecida ya que el host conectado no ha podido responder in C:\xampp\htdocs\api_siices\system\Database\MySQLi\Connection.php:246
+Stack trace:
+#0 C:\xampp\htdocs\api_siices\system\Database\BaseConnection.php(419): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 C:\xampp\htdocs\api_siices\system\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+#2 C:\xampp\htdocs\api_siices\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT f.cur_an...', Array, false)
+#3 C:\xampp\htdocs\api_siices\app\Models\egresadosModel.php(78): CodeIgniter\Database\BaseBuilder->get()
+#4 C:\xampp\htdocs\api_siices\app\Controllers\Egresados.php(59): App\Models\egresadosModel->obtenerPorCampos(Array, Array, Array, NULL, NULL)
+#5 C:\xampp\htdocs\api_siices\system\CodeIgniter.php(933): App\Controllers\Egresados->obtenerFila()
+#6 C:\xampp\htdocs\api_siices\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Egresados))
+#7 C:\xampp\htdocs\api_siices\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\api_siices\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\api_siices\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\api_siices\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2026-04-29 19:42:10 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Se produjo un error durante el intento de conexión ya que la parte conectada no respondió adecuadamente tras un periodo de tiempo, o bien se produjo un error en la conexión establecida ya que el host conectado no ha podido responder
+[Method: POST, Route: egresados/obtenerFila]
+in SYSTEMPATH\Database\BaseConnection.php on line 465.
+ 1 SYSTEMPATH\Database\BaseConnection.php(614): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT f.cur_ano + 1 AS ANO_EGRESO, 
+            b.mta_ctg_nom AS CATEGORIA, 
+            trim(CONCAT(i.EDO_NOM,\' \',h.DEL_NOM)) AS DELEGACION, 
+            d.esp_nom as ESPECIALIDAD,          
+            case when d.esp_tip_cve=1 then \'DIRECTA\' ELSE \'RAMA\' END AS TIPO_ESPECIALIDAD, 
+            g.sde_nom AS SEDE, 
+            f.grd_num AS GRADO, 
+            e.curp, 
+            j.gnr_nom AS GENERO,              
+            e.per_ap1, 
+            e.per_ap2, 
+            e.per_nom, 
+            c.MTA_TIP_NOM AS TIPO
+FROM `srm_per_reg_arc` `a`
+JOIN `srm_mta_ctg_cat` `b` ON `a`.`mta_ctg_cve`=`b`.`mta_ctg_cve`
+JOIN `srm_mta_tip_cat` `c` ON `a`.`mta_tip_cve`=`c`.`mta_tip_cve`
+JOIN `srm_esp_cat` `d` ON `a`.`esp_cve`=`d`.`esp_cve`
+JOIN `gra_per_arc` `e` ON `a`.`PER_CVE`=`e`.`PER_CVE`
+JOIN `srm_per_ads_arc1` `f` ON `a`.`reg_cve`=`f`.`reg_cve`
+JOIN `gra_sde_cat` `g` ON `f`.`sde_cve`=`g`.`sde_cve`
+JOIN `ims_del_cat` `h` ON `g`.`del_cve`=`h`.`del_cve`
+JOIN `gra_edo_cat` `i` ON `g`.`edo_cve`=`i`.`edo_cve`
+JOIN `gra_per_gnr_cat` `j` ON `j`.`gnr_cve`=`e`.`gnr_cve`
+WHERE `f`.`egr_sta_cve` = :f.egr_sta_cve:
+AND `f`.`ter_sta_cve` = :f.ter_sta_cve:
+AND f.cur_ano + 1 IN :f.cur_ano + 1:
+AND `b`.`mta_ctg_nom` IN :b.mta_ctg_nom:
+AND TRIM(CONCAT(i.edo_nom, \' \', h.del_nom)) IN :TRIM(CONCAT(i.edo_nom, \' \', h.del_nom)):
+ORDER BY `f`.`cur_ano` DESC, `d`.`esp_nom` DESC, `e`.`per_ap1` DESC, `e`.`per_ap2` DESC, `e`.`per_nom` DESC', [...], false)
+ 3 APPPATH\Models\egresadosModel.php(78): CodeIgniter\Database\BaseBuilder->get()
+ 4 APPPATH\Controllers\Egresados.php(59): App\Models\egresadosModel->obtenerPorCampos([...], [...], [...], null, null)
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Egresados->obtenerFila()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Egresados))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
