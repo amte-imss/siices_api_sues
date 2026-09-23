@@ -4,6 +4,10 @@
 # PHPUnit
 /phpunit.xml
 
+# CodeIgniter directories
+system/
+tests/
+
 # CodeIgniter writable directories
 writable/
 

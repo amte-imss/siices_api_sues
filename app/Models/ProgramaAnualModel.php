@@ -659,6 +659,94 @@ class ProgramaAnualModel extends Model
         }
     }
 
+    protected function aplicarFiltrosComunes(\CodeIgniter\Database\BaseBuilder $builder, array $filters): void 
+    {
+        $builder->where('clave_unidad_solicita <>', 0); //No se cuentan cursos que no tengan asignada una unidad solicitante (clave_unidad_solicita = 0)
+
+        if (!empty($filters['folio'])) {
+            $builder->whereIn('folio', $filters['folio']);
+        }
+        if (!empty($filters['id_ooad'])) {
+            $builder->whereIn('id_delsolicita', $filters['id_ooad']);
+        }
+        if (!empty($filters['id_umae'])) {
+            $builder->whereIn('clave_unidad_solicita', $filters['id_umae']);
+        }
+        if (!empty($filters['tipo_curso'])) {
+            $builder->whereIn('tipo_curso', $filters['tipo_curso']);
+        }
+
+        if (!empty($filters['anios'])) { // Filtros de fecha
+            // Normalizar a array de enteros limpios
+            $aniosRaw = is_array($filters['anios']) 
+                ? $filters['anios'] 
+                : explode(',', (string)$filters['anios']);
+
+            $aniosActuales = array_values(array_filter(array_map('intval', array_map('trim', $aniosRaw)), fn($a) => $a > 1900));
+
+            if (!empty($aniosActuales)) {
+                if (!empty($filters['tipo_curso']) && $filters['tipo_curso'] === 'PROGRAMA ANUAL') {
+                    // Generar la lista de años anteriores: cada año menos 1
+                    $aniosAnteriores = array_map(fn($a) => $a - 1, $aniosActuales);
+
+                    $strAnteriores = implode(',', $aniosAnteriores);
+                    $strActuales   = implode(',', $aniosActuales);
+
+                    // Filtro agrupado usando IN para años y meses
+                    $builder->where(
+                        "((YEAR(fecha_registro) IN ({$strAnteriores}) AND MONTH(fecha_registro) IN (8, 9)) " .
+                        "OR (YEAR(fecha_registro) IN ({$strActuales}) AND MONTH(fecha_registro) = 2))",
+                        null,
+                        false
+                    );
+                } else {
+                    // whereIn nativo pasando false para evitar escape de la función SQL YEAR()
+                    $builder->whereIn('YEAR(fecha_termino)', $aniosActuales, false);
+                }
+            }
+        } else {
+            switch ($filters['tipo_fecha']) {
+                case 'registro':
+                    $builder->where("fecha_registro BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                    break;
+                case 'inicio':
+                    $builder->where("fecha_inicio BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                    break;
+                case 'termino':
+                    $builder->where("fecha_termino BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                    break;
+            }
+        }
+
+        if (!empty($filters['cve_estatus_curso'])) {
+            $builder->whereIn('cve_estatus_curso', $filters['cve_estatus_curso']);
+        }
+
+        if (!empty($filters['id_catalogo'])) {
+            $builder->whereIn('id_catalogo', $filters['id_catalogo']);
+        }
+
+        if (!empty($filters['id_beca'])) {
+            $builder->whereIn('id_beca', $filters['id_beca']);
+        }
+
+        if (!empty($filters['curso'])) {
+            $cursos = array_filter(array_map('trim', explode(',', $filters['curso'])));
+
+            if (!empty($cursos)) {
+                $builder->groupStart();
+                foreach ($cursos as $i => $c) {
+                    if ($i === 0) {
+                        $builder->like('nombre_curso', $c);
+                    } else {
+                        $builder->orLike('nombre_curso', $c);
+                    }
+                }
+                $builder->groupEnd();
+            }
+        }
+    }
+
     /**
      * Obtiene estadísticas agregadas desde la vista vw_abec_curso_alumno|
      * Devuelve: total_registros, total_alumnos, total_alumnos_distinct, total_cursos, total_unidades
@@ -670,10 +758,7 @@ class ProgramaAnualModel extends Model
     {
         try {
             $db = \Config\Database::connect('dbces');
-
             $subquery = $this->subqueryCursoAlumnos(); // Construye la subconsulta para obtener los datos de cursos y alumnos
-
-            //$builder = $db->table('vw_abec_curso_alumno v');
             $builder = $db->newQuery()->fromSubquery($subquery, 't');
 
             $builder->select(
@@ -684,7 +769,7 @@ class ProgramaAnualModel extends Model
             );
 
             // Filtros adicionales opcionales
-            if (!empty($filters['folio'])) {
+            /*if (!empty($filters['folio'])) {
                 $folio = $this->validarString($filters['folio'], 255);
                 $builder->where('folio', $folio);
             }
@@ -713,6 +798,18 @@ class ProgramaAnualModel extends Model
                 } else {                    
                     $builder->where("fecha_termino BETWEEN '{$anio_actual}-01-01 00:00:00' AND '{$anio_actual}-12-31 23:59:59'", null, false);
                 }
+            } else {
+                switch ($filters['tipo_fecha']) {
+                    case 'registro':
+                        $builder->where("fecha_registro BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'inicio':
+                        $builder->where("fecha_inicio BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'termino':
+                        $builder->where("fecha_termino BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                }
             }
 
             if (!empty($filters['cve_estatus_curso'])) {
@@ -728,12 +825,12 @@ class ProgramaAnualModel extends Model
             if (!empty($filters['id_beca'])) {
                 $turno = (int)$filters['id_beca'];
                 $builder->where('id_beca', $turno);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $query = $builder->get();
-            $row = $query->getRowArray();
-
-            //echo (string)$db->getLastQuery();// exit();
+            //echo (string)$db->getLastQuery(); //exit(); // Debug: muestra la consulta SQL generada
+            $row = $query->getResultArray();
 
             // Normalizar resultado
             if (!$row) {
@@ -749,6 +846,7 @@ class ProgramaAnualModel extends Model
 
         } catch (\Exception $e) {
             log_message('error', 'Error en ProgramaAnualModel::obtenerEstadisticas: ' . $e->getMessage());
+            echo "Error en ProgramaAnualModel::obtenerEstadisticas: " . $e->getMessage();
             return [
                 'total_registros' => 0,
                 'total_alumnos_distinct' => 0,
@@ -765,14 +863,12 @@ class ProgramaAnualModel extends Model
     {
         try {
             $db = \Config\Database::connect('dbces');
-
             $subquery = $this->subqueryCursoAlumnos(); // Construye la subconsulta para obtener los datos de cursos y alumnos
             $builder = $db->newQuery()->fromSubquery($subquery, 't');
 
             $builder->select("delegacion_solicita, COUNT(DISTINCT folio) AS total_course, COUNT(id_Persona_Alumno) AS total_student, COUNT(id_Persona_Alumno)/NULLIF(COUNT(DISTINCT folio),0) AS porcentaje", false);
-            
             $builder->where('nivel_unidad_solicita<>', 3);
-
+            /*
             // Filtros adicionales opcionales
             if (!empty($filters['folio'])) {
                 $folio = $this->validarString($filters['folio'], 255);
@@ -803,6 +899,18 @@ class ProgramaAnualModel extends Model
                 } else {                    
                     $builder->where("fecha_termino BETWEEN '{$anio_actual}-01-01 00:00:00' AND '{$anio_actual}-12-31 23:59:59'", null, false);
                 }
+            } else {
+                switch ($filters['tipo_fecha']) {
+                    case 'registro':
+                        $builder->where("fecha_registro BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'inicio':
+                        $builder->where("fecha_inicio BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'termino':
+                        $builder->where("fecha_termino BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                }
             }
 
             if (!empty($filters['cve_estatus_curso'])) {
@@ -818,10 +926,12 @@ class ProgramaAnualModel extends Model
             if (!empty($filters['id_beca'])) {
                 $turno = (int)$filters['id_beca'];
                 $builder->where('id_beca', $turno);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy('delegacion_solicita');
             $query = $builder->get();
+            //echo (string)$db->getLastQuery(); exit();// Para depuración, muestra la consulta generada 
             return $query->getResultArray();
 
         } catch (\Exception $e) {
@@ -837,13 +947,12 @@ class ProgramaAnualModel extends Model
     {
         try {
             $db = \Config\Database::connect('dbces');
-            
             $subquery = $this->subqueryCursoAlumnos(); // Construye la subconsulta para obtener los datos de cursos y alumnos
             $builder = $db->newQuery()->fromSubquery($subquery, 't');
             
             $builder->select("delegacion_solicita, unidad_solicita, COUNT(DISTINCT folio) AS total_course, COUNT(id_Persona_Alumno) AS total_student, COUNT(id_Persona_Alumno)/NULLIF(COUNT(DISTINCT folio),0) AS porcentaje", false);
             $builder->where('nivel_unidad_solicita', 3);
-
+            /*
             // Filtros adicionales opcionales
             if (!empty($filters['folio'])) {
                 $folio = $this->validarString($filters['folio'], 255);
@@ -870,9 +979,21 @@ class ProgramaAnualModel extends Model
                 $anio_actual = (int)$filters['anio'];
                 $anio_anterior = (int)$filters['anio']-1;
                 if (!empty($filters['tipo_curso']) && $filters['tipo_curso'] === "PROGRAMA ANUAL") {
-                    $builder->where("(YEAR(fecha_registro) = {$anio_anterior} and month(fecha_registro) in (8,9)) OR (YEAR(fecha_registro) = {$anio_actual} and month(fecha_registro) = 2)", null, false);
+                    $builder->where("((YEAR(fecha_registro) = {$anio_anterior} and month(fecha_registro) in (8,9)) OR (YEAR(fecha_registro) = {$anio_actual} and month(fecha_registro) = 2))", null, false);
                 } else {                    
                     $builder->where("fecha_termino BETWEEN '{$anio_actual}-01-01 00:00:00' AND '{$anio_actual}-12-31 23:59:59'", null, false);
+                }
+            } else {
+                switch ($filters['tipo_fecha']) {
+                    case 'registro':
+                        $builder->where("fecha_registro BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'inicio':
+                        $builder->where("fecha_inicio BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'termino':
+                        $builder->where("fecha_termino BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
                 }
             }
 
@@ -889,13 +1010,14 @@ class ProgramaAnualModel extends Model
             if (!empty($filters['id_beca'])) {
                 $turno = (int)$filters['id_beca'];
                 $builder->where('id_beca', $turno);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy(['delegacion_solicita', 'unidad_solicita']);
             $builder->orderBy('delegacion_solicita, unidad_solicita', 'ASC');
             $query = $builder->get();
 
-            //echo (string)$db->getLastQuery(); // Para depuración, muestra la consulta generada
+            //echo (string)$db->getLastQuery(); exit();// Para depuración, muestra la consulta generada 
             return $query->getResultArray();
 
         } catch (\Exception $e) {
@@ -916,7 +1038,7 @@ class ProgramaAnualModel extends Model
             $builder = $db->newQuery()->fromSubquery($subquery, 't');
 
             $builder->select('categoria, COUNT(categoria) AS total', false);
-
+            /*
             // Filtros adicionales opcionales
             if (!empty($filters['folio'])) {
                 $folio = $this->validarString($filters['folio'], 255);
@@ -947,6 +1069,18 @@ class ProgramaAnualModel extends Model
                 } else {                    
                     $builder->where("fecha_termino BETWEEN '{$anio_actual}-01-01 00:00:00' AND '{$anio_actual}-12-31 23:59:59'", null, false);
                 }
+            } else {
+                switch ($filters['tipo_fecha']) {
+                    case 'registro':
+                        $builder->where("fecha_registro BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'inicio':
+                        $builder->where("fecha_inicio BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'termino':
+                        $builder->where("fecha_termino BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                }
             }
 
             if (!empty($filters['cve_estatus_curso'])) {
@@ -962,13 +1096,17 @@ class ProgramaAnualModel extends Model
             if (!empty($filters['id_beca'])) {
                 $turno = (int)$filters['id_beca'];
                 $builder->where('id_beca', $turno);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy('categoria');
             $builder->orderBy('total', 'DESC');
 
             $query = $builder->get();
-            return $query->getResultArray();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
+            $row = $query->getResultArray();
+            
+            return $row;
 
         } catch (\Exception $e) {
             log_message('error', 'Error en 
@@ -989,7 +1127,7 @@ class ProgramaAnualModel extends Model
             $builder = $db->newQuery()->fromSubquery($subquery, 't');
 
             $builder->select('MONTH(fecha_termino) AS mes, COUNT(DISTINCT folio) AS total_course, COUNT(id_Persona_Alumno) AS total_student', false);
-
+            /*
             // Filtros adicionales opcionales
             if (!empty($filters['folio'])) {
                 $folio = $this->validarString($filters['folio'], 255);
@@ -1020,6 +1158,18 @@ class ProgramaAnualModel extends Model
                 } else {                    
                     $builder->where("fecha_termino BETWEEN '{$anio_actual}-01-01 00:00:00' AND '{$anio_actual}-12-31 23:59:59'", null, false);
                 }
+            } else {
+                switch ($filters['tipo_fecha']) {
+                    case 'registro':
+                        $builder->where("fecha_registro BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'inicio':
+                        $builder->where("fecha_inicio BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'termino':
+                        $builder->where("fecha_termino BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                }
             }
 
             if (!empty($filters['cve_estatus_curso'])) {
@@ -1035,11 +1185,13 @@ class ProgramaAnualModel extends Model
             if (!empty($filters['id_beca'])) {
                 $turno = (int)$filters['id_beca'];
                 $builder->where('id_beca', $turno);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy('MONTH(fecha_termino)');
             $builder->orderBy('mes', 'ASC');
             $query = $builder->get();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
             return $query->getResultArray();
 
         } catch (\Exception $e) {
@@ -1059,7 +1211,7 @@ class ProgramaAnualModel extends Model
             $builder = $db->newQuery()->fromSubquery($subquery, 't');
 
             $builder->select('sexo, COUNT(sexo) AS total', false);
-
+            /*
             // Filtros adicionales opcionales
             if (!empty($filters['folio'])) {
                 $folio = $this->validarString($filters['folio'], 255);
@@ -1090,6 +1242,18 @@ class ProgramaAnualModel extends Model
                 } else {                    
                     $builder->where("fecha_termino BETWEEN '{$anio_actual}-01-01 00:00:00' AND '{$anio_actual}-12-31 23:59:59'", null, false);
                 }
+            } else {
+                switch ($filters['tipo_fecha']) {
+                    case 'registro':
+                        $builder->where("fecha_registro BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'inicio':
+                        $builder->where("fecha_inicio BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'termino':
+                        $builder->where("fecha_termino BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                }
             }
 
             if (!empty($filters['cve_estatus_curso'])) {
@@ -1105,7 +1269,8 @@ class ProgramaAnualModel extends Model
             if (!empty($filters['id_beca'])) {
                 $turno = (int)$filters['id_beca'];
                 $builder->where('id_beca', $turno);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy('sexo');
             $builder->orderBy('total', 'DESC');
@@ -1129,7 +1294,7 @@ class ProgramaAnualModel extends Model
             $builder = $db->newQuery()->fromSubquery($subquery, 't');
 
             $builder->select('folio, fecha_registro, nombre_curso, fecha_inicio, fecha_termino, tipo_curso, estatus_curso, delegacion_solicita, unidad_solicita, nivel_unidad_solicita, delegacion_imparte, unidad_imparte, nivel_unidad_imparte, catalogo, beca, modalidad, tema_prioritario, turno', false);
-
+            /*
             // Filtros adicionales opcionales
             if (!empty($filters['folio'])) {
                 $folio = $this->validarString($filters['folio'], 255);
@@ -1160,6 +1325,18 @@ class ProgramaAnualModel extends Model
                 } else {                    
                     $builder->where("fecha_termino BETWEEN '{$anio_actual}-01-01 00:00:00' AND '{$anio_actual}-12-31 23:59:59'", null, false);
                 }
+            } else {
+                switch ($filters['tipo_fecha']) {
+                    case 'registro':
+                        $builder->where("fecha_registro BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'inicio':
+                        $builder->where("fecha_inicio BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                    case 'termino':
+                        $builder->where("fecha_termino BETWEEN '{$filters['fecha_inicio']} 00:00:00' AND '{$filters['fecha_termino']} 23:59:59'", null, false);
+                        break;
+                }
             }
 
             if (!empty($filters['cve_estatus_curso'])) {
@@ -1175,10 +1352,12 @@ class ProgramaAnualModel extends Model
             if (!empty($filters['id_beca'])) {
                 $turno = (int)$filters['id_beca'];
                 $builder->where('id_beca', $turno);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy(['folio', 'fecha_registro', 'nombre_curso', 'fecha_inicio', 'fecha_termino', 'tipo_curso', 'estatus_curso', 'delegacion_solicita', 'unidad_solicita', 'nivel_unidad_solicita', 'delegacion_imparte', 'unidad_imparte', 'nivel_unidad_imparte', 'catalogo', 'beca', 'modalidad', 'tema_prioritario', 'turno']);
             $query = $builder->get();
+            //echo (string)$db->getLastQuery(); //exit(); // Debug: muestra la consulta SQL generada
             return $query->getResultArray();
 
         } catch (\Exception $e) {
@@ -1206,6 +1385,36 @@ class ProgramaAnualModel extends Model
 
         } catch (\Exception $e) {
             log_message('error', 'Error en ProgramaAnualModel::detalleAlumnosPorCurso: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Detalle de alumnos por curso
+     */
+    public function detalleAlumnos(array $filters = []): array
+    {
+        try {
+            $db = \Config\Database::connect('dbces');
+            $subquery = $this->subqueryCursoAlumnos(); // Construye la subconsulta para obtener los datos de cursos y alumnos
+            $builder = $db->newQuery()->fromSubquery($subquery, 't');
+
+            $builder->select('folio, nombre_curso, modalidad, cve_estatus_curso, estatus_curso, tipo_curso, cve_estado_curso, estado_curso, id_delsolicita, delegacion_solicita, clave_unidad_solicita, 
+                unidad_solicita, nivel_unidad_solicita, id_delimparte, delegacion_imparte, clave_unidad_imparte, unidad_imparte, nivel_unidad_imparte, fecha_registro, fecha_inicio, 
+                fecha_termino, fecha_envio, cupo, dias_habiles_duracion, dias_naturales, duracion_horas, id_catalogo, catalogo, id_beca, beca, lineaprioritaria, turno, 
+                tema_prioritario, enfoque_preventivo, id_Persona_Alumno, matricula_alumno, curp_alumno, nombre_alumno, sexo, id_categoria, categoria, id_subcategoria, subcategoria, 
+                especialidad, edo_cve, estado, del_cve, delegacion, clave_sede, sede, clave_tipo_contratacion2, tipo_contratacion2, servicio_adscripcion, asistio, tipo_asistencia, 
+                acredito, acuerdos, desacuerdos, folio_constancia', false);
+            
+            $this->aplicarFiltrosComunes($builder, $filters);
+            
+            $query = $builder->get();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
+            return $query->getResultArray();
+
+        } catch (\Exception $e) {
+            log_message('error', 'Error en ProgramaAnualModel::detalleAlumnos: ' . $e->getMessage());
+            //echo "Error en ProgramaAnualModel::detalleAlumnos: " . $e->getMessage();
             return [];
         }
     }

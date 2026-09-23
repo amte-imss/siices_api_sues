@@ -107,6 +107,24 @@ class Abec extends ResourceController
         }
     }
 
+    private function obtenerFiltrosDesdeJson($json): array
+    {
+        $filters = [];
+        if (isset($json['anios'])) {
+            $anios = is_array($json['anios']) 
+                ? array_map('intval', $json['anios']) 
+                : array_filter(array_map('intval', explode(',', $json['anios'])));
+
+            $filters['anios'] = array_values(array_filter($anios, fn($a) => $a > 1900));
+        }
+        if (isset($json['id_ooad'])) $filters['id_ooad'] = $this->parseIds($json['id_ooad']);
+        if (isset($json['id_umae'])) $filters['id_umae'] = $this->parseIds($json['id_umae']);
+        if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->parseIds($json['id_tipo_sesion']);
+        if (isset($json['curso'])) $filters['curso'] = trim($json['curso']);
+
+        return $filters;
+    }
+
     /**
      * Obtiene estadísticas agregadas (totales) desde la vista vw_abec_curso_alumno
      * 
@@ -123,17 +141,20 @@ class Abec extends ResourceController
     public function obtenerEstadisticas(): ResponseInterface
     {
         try {
-            if (!$this->validarSeguridad()) {
+            /*if (!$this->validarSeguridad()) {
                 return $this->respond(["error" => "Acceso no autorizado"], 401);
             }
 
             $json = $this->request->getJSON(true);
             if ($json === null) {
                 return $this->respond(["error" => "JSON inválido o faltante"], 400);
-            }
+            }*/
 
-            $filters = [];
+            $json = $this->validarSeguridadYJson();
 
+            $filters = $this->obtenerFiltrosDesdeJson($json);
+
+            /*
             // anios: aceptar tanto número como array (tomar primer valor)
             if (isset($json['anios'])) {
                 $anioVal = $json['anios'];
@@ -156,7 +177,7 @@ class Abec extends ResourceController
 
             if (isset($json['id_tipo_sesion'])) {
                 $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX, 'id_tipo_sesion inválido');
-            }
+            }*/
 
             $result = $this->abecModel->obtenerEstadisticas($filters);
 
@@ -175,6 +196,22 @@ class Abec extends ResourceController
         }
     }
 
+    protected function validarSeguridadYJson(): array
+    {
+        if (!$this->validarSeguridad()) {
+            throw new \InvalidArgumentException('Acceso no autorizado');
+            //return $this->respond(["error" => "Acceso no autorizado"], 401);
+        }
+
+        $json = $this->request->getJSON(true);
+        if ($json === null || !is_array($json)) {
+            throw new \InvalidArgumentException('JSON inválido o cuerpo de la petición vacío');
+            //return $this->respond(["error" => "JSON inválido o cuerpo de la petición vacío"], 400);
+        }
+
+        return $json;
+    }
+
     /**
      * Estadísticas: courses/students by OOAD (umae = false)
      * POST /api/abec/estadisticas/ooad
@@ -182,21 +219,12 @@ class Abec extends ResourceController
     public function estadisticasPorOOAD(): ResponseInterface
     {
         try {
-            if (!$this->validarSeguridad()) {
+            /*if (!$this->validarSeguridad()) {
                 return $this->respond(['error' => 'Acceso no autorizado'], 401);
-            }
+            }*/
+            $json = $this->validarSeguridadYJson();
 
-            $json = $this->request->getJSON(true);
-            $filters = [];
-            if (isset($json['anios'])) {
-                $anioVal = is_array($json['anios']) ? ($json['anios'][0] ?? null) : $json['anios'];
-                if ($anioVal !== null) $filters['anio'] = $this->validarInteger($anioVal, 1900, 2100);
-            }
-            if (isset($json['id_ooad'])) $filters['id_ooad'] = $this->validarInteger($json['id_ooad'], 1, PHP_INT_MAX);
-            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);
-            if (isset($json['id_umae'])) {
-                $filters['id_umae'] = $this->validarInteger($json['id_umae'], 1, PHP_INT_MAX, 'id_umae inválido');
-            }
+            $filters = $this->obtenerFiltrosDesdeJson($json);
 
             $data = $this->abecModel->estadisticasPorOOAD($filters);
             return $this->respond(['success' => true, 'data' => $data, 'filters' => $filters]);
@@ -209,6 +237,8 @@ class Abec extends ResourceController
         }
     }
 
+    
+
     /**
      * Estadísticas: courses/students by UMAE (umae = true)
      * POST /api/abec/estadisticas/umae
@@ -216,17 +246,9 @@ class Abec extends ResourceController
     public function estadisticasPorUMAE(): ResponseInterface
     {
         try {
-            if (!$this->validarSeguridad()) return $this->respond(['error' => 'Acceso no autorizado'], 401);
+            $json = $this->validarSeguridadYJson();
 
-            $json = $this->request->getJSON(true);
-            $filters = [];
-            if (isset($json['anios'])) {
-                $anioVal = is_array($json['anios']) ? ($json['anios'][0] ?? null) : $json['anios'];
-                if ($anioVal !== null) $filters['anio'] = $this->validarInteger($anioVal, 1900, 2100);
-            }
-            if (isset($json['id_ooad'])) $filters['id_ooad'] = $this->validarInteger($json['id_ooad'], 1, PHP_INT_MAX);
-            if (isset($json['id_umae'])) $filters['id_umae'] = $this->validarInteger($json['id_umae'], 1, PHP_INT_MAX);
-            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);
+            $filters = $this->obtenerFiltrosDesdeJson($json);
 
             $data = $this->abecModel->estadisticasPorUMAE($filters);
             return $this->respond(['success' => true, 'data' => $data, 'filters' => $filters]);
@@ -246,16 +268,16 @@ class Abec extends ResourceController
     public function categoriaPorAlumno(): ResponseInterface
     {
         try {
-            if (!$this->validarSeguridad()) return $this->respond(['error' => 'Acceso no autorizado'], 401);
-            $json = $this->request->getJSON(true);
-            $filters = [];
-            if (isset($json['anios'])) {
+            $json = $this->validarSeguridadYJson();
+            
+            $filters = $this->obtenerFiltrosDesdeJson($json);
+            /*if (isset($json['anios'])) {
                 $anioVal = is_array($json['anios']) ? ($json['anios'][0] ?? null) : $json['anios'];
                 if ($anioVal !== null) $filters['anio'] = $this->validarInteger($anioVal, 1900, 2100);
             }
             if (isset($json['id_ooad'])) $filters['id_ooad'] = $this->validarInteger($json['id_ooad'], 1, PHP_INT_MAX);
             if (isset($json['id_umae'])) $filters['id_umae'] = $this->validarInteger($json['id_umae'], 1, PHP_INT_MAX);
-            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);
+            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);*/
 
             $data = $this->abecModel->categoriaPorAlumno($filters);
             return $this->respond(['success' => true, 'data' => $data, 'filters' => $filters]);
@@ -275,16 +297,16 @@ class Abec extends ResourceController
     public function porMes(): ResponseInterface
     {
         try {
-            if (!$this->validarSeguridad()) return $this->respond(['error' => 'Acceso no autorizado'], 401);
-            $json = $this->request->getJSON(true);
-            $filters = [];
-            if (isset($json['anios'])) {
+            $json = $this->validarSeguridadYJson();
+            
+            $filters = $this->obtenerFiltrosDesdeJson($json);
+            /*if (isset($json['anios'])) {
                 $anioVal = is_array($json['anios']) ? ($json['anios'][0] ?? null) : $json['anios'];
                 if ($anioVal !== null) $filters['anio'] = $this->validarInteger($anioVal, 1900, 2100);
             }
             if (isset($json['id_ooad'])) $filters['id_ooad'] = $this->validarInteger($json['id_ooad'], 1, PHP_INT_MAX);
             if (isset($json['id_umae'])) $filters['id_umae'] = $this->validarInteger($json['id_umae'], 1, PHP_INT_MAX);
-            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);
+            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);*/
 
             $data = $this->abecModel->porMes($filters);
             return $this->respond(['success' => true, 'data' => $data, 'filters' => $filters]);
@@ -304,16 +326,16 @@ class Abec extends ResourceController
     public function porSexo(): ResponseInterface
     {
         try {
-            if (!$this->validarSeguridad()) return $this->respond(['error' => 'Acceso no autorizado'], 401);
-            $json = $this->request->getJSON(true);
-            $filters = [];
-            if (isset($json['anios'])) {
+            $json = $this->validarSeguridadYJson();
+            $filters = $this->obtenerFiltrosDesdeJson($json);
+            
+            /*if (isset($json['anios'])) {
                 $anioVal = is_array($json['anios']) ? ($json['anios'][0] ?? null) : $json['anios'];
                 if ($anioVal !== null) $filters['anio'] = $this->validarInteger($anioVal, 1900, 2100);
             }
             if (isset($json['id_ooad'])) $filters['id_ooad'] = $this->validarInteger($json['id_ooad'], 1, PHP_INT_MAX);
             if (isset($json['id_umae'])) $filters['id_umae'] = $this->validarInteger($json['id_umae'], 1, PHP_INT_MAX);
-            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);
+            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);*/
 
             $data = $this->abecModel->porSexo($filters);
             return $this->respond(['success' => true, 'data' => $data, 'filters' => $filters]);
@@ -333,16 +355,15 @@ class Abec extends ResourceController
     public function listadoCursos(): ResponseInterface
     {
         try {
-            if (!$this->validarSeguridad()) return $this->respond(['error' => 'Acceso no autorizado'], 401);
-            $json = $this->request->getJSON(true);
-            $filters = [];
-            if (isset($json['anios'])) {
+            $json = $this->validarSeguridadYJson();
+            $filters = $this->obtenerFiltrosDesdeJson($json);
+            /*if (isset($json['anios'])) {
                 $anioVal = is_array($json['anios']) ? ($json['anios'][0] ?? null) : $json['anios'];
                 if ($anioVal !== null) $filters['anio'] = $this->validarInteger($anioVal, 1900, 2100);
             }
             if (isset($json['id_ooad'])) $filters['id_ooad'] = $this->validarInteger($json['id_ooad'], 1, PHP_INT_MAX);
             if (isset($json['id_umae'])) $filters['id_umae'] = $this->validarInteger($json['id_umae'], 1, PHP_INT_MAX);
-            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);
+            if (isset($json['id_tipo_sesion'])) $filters['id_tipo_sesion'] = $this->validarInteger($json['id_tipo_sesion'], 1, PHP_INT_MAX);*/
             
             $data = $this->abecModel->listadoCursos($filters);
             return $this->respond(['success' => true, 'data' => $data, 'filters' => $filters]);
@@ -357,15 +378,36 @@ class Abec extends ResourceController
 
     /**
      * Detalle de alumnos por curso (GET con id)
-     * GET /api/abec/detalleAlumnos/{id}
+     * GET /api/abec/detalleAlumno/{id}
      */
-    public function detalleAlumnos($id = null): ResponseInterface
+    public function detalleAlumnoXId($id = null): ResponseInterface
     {
         try {
             if (!$this->validarSeguridad()) return $this->respond(['error' => 'Acceso no autorizado'], 401);
             $idVal = $this->validarInteger($id, 1, PHP_INT_MAX, 'ID de curso inválido');
             $data = $this->abecModel->detalleAlumnosPorCurso($idVal);
             return $this->respond(['success' => true, 'data' => $data]);
+
+        } catch (\InvalidArgumentException $e) {
+            return $this->respond(['error' => $e->getMessage()], 400);
+        } catch (\Exception $e) {
+            log_message('error', 'AbecController::detalleAlumnos - ' . $e->getMessage());
+            return $this->respond(['error' => 'Error al obtener detalle de alumnos'], 500);
+        }
+    }
+
+    /**
+     * Listado de cursos (agrupado por curso)
+     * POST /api/abec/detalleAlumnos
+     */
+    public function detalleAlumnos(): ResponseInterface
+    {
+        try {
+            $json = $this->validarSeguridadYJson();
+            $filters = $this->obtenerFiltrosDesdeJson($json);
+            
+            $data = $this->abecModel->detalleAlumnos($filters);
+            return $this->respond(['success' => true, 'data' => $data, 'filters' => $filters]);
 
         } catch (\InvalidArgumentException $e) {
             return $this->respond(['error' => $e->getMessage()], 400);
@@ -453,5 +495,15 @@ class Abec extends ResourceController
             ["error" => "Método HTTP no permitido"],
             405
         );
+    }
+    
+    // Función auxiliar para sanitizar y convertir a array de enteros (soporta array o string separado por comas)
+    public function parseIds($input): array 
+    {
+        if (empty($input)) {
+            return [];
+        }
+        $items = is_array($input) ? $input : explode(',', (string)$input);
+        return array_values(array_filter(array_map('intval', array_map('trim', $items)), fn($id) => $id > 0));
     }
 }

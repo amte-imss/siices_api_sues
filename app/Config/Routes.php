@@ -22,7 +22,8 @@ $routes->post('abec/estadisticas/categoria', 'Abec::categoriaPorAlumno');
 $routes->post('abec/estadisticas/mes', 'Abec::porMes');
 $routes->post('abec/estadisticas/sexo', 'Abec::porSexo');
 $routes->post('abec/listadoCursos', 'Abec::listadoCursos');
-$routes->get('abec/detalleAlumnos/(:num)', 'Abec::detalleAlumnos/$1');
+$routes->get('abec/detalleAlumnoXId/(:num)', 'Abec::detalleAlumnoXId/$1');
+$routes->post('abec/detalleAlumnos', 'Abec::detalleAlumnos');
 
 // ========== ENDPOINT: ProgramaAnual (Mejorado con seguridad) ==========
 $routes->post('programa/obtenerCatalogos', 'ProgramaAnual::obtenerCatalogos');
@@ -35,4 +36,5 @@ $routes->post('programa/estadisticas/categoria', 'ProgramaAnual::categoriaPorAlu
 $routes->post('programa/estadisticas/mes', 'ProgramaAnual::porMes');
 $routes->post('programa/estadisticas/sexo', 'ProgramaAnual::porSexo');
 $routes->post('programa/listadoCursos', 'ProgramaAnual::listadoCursos');
-$routes->get('programa/detalleAlumnos/(:num)', 'ProgramaAnual::detalleAlumnos/$1');
+$routes->get('programa/detalleAlumnoXId/(:num)', 'ProgramaAnual::detalleAlumnoXId/$1');
+$routes->post('programa/detalleAlumnos', 'ProgramaAnual::detalleAlumnos');

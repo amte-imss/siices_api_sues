@@ -417,6 +417,37 @@ class AbecModel extends Model
         }
     }
 
+    protected function aplicarFiltrosComunes(\CodeIgniter\Database\BaseBuilder $builder, array $filters): void 
+    {
+        if (!empty($filters['anios'])) {                
+            $builder->whereIn('YEAR(v.fechaSesion)', $filters['anios'], false);
+        }
+        if (!empty($filters['id_ooad'])) {
+            $builder->whereIn('v.del_cve', $filters['id_ooad']);
+        }
+        if (!empty($filters['id_umae'])) {
+            $builder->whereIn('v.sde_cve', $filters['id_umae']);
+        }
+        if (!empty($filters['id_tipo_sesion'])) {
+            $builder->whereIn('v.id_tipo_sesion', $filters['id_tipo_sesion']);
+        }
+        if (!empty($filters['curso'])) {
+            $cursos = array_filter(array_map('trim', explode(',', $filters['curso'])));
+
+            if (!empty($cursos)) {
+                $builder->groupStart();
+                foreach ($cursos as $i => $c) {
+                    if ($i === 0) {
+                        $builder->like('v.curso', $c);
+                    } else {
+                        $builder->orLike('v.curso', $c);
+                    }
+                }
+                $builder->groupEnd();
+            }
+        }
+    }
+
     /**
      * Obtiene estadísticas agregadas desde la vista vw_abec_curso_alumno
      * Devuelve: total_registros, total_alumnos, total_alumnos_distinct, total_cursos, total_unidades
@@ -439,7 +470,7 @@ class AbecModel extends Model
             );
 
             // Aplicar filtros opcionales
-            if (!empty($filters['anio'])) {
+            /*if (!empty($filters['anio'])) {
                 $anio = (int)$filters['anio'];
                 $fechaInicio = $anio . "-01-01 00:00:00";
                 $fechaFin = $anio . "-12-31 23:59:59";
@@ -459,10 +490,12 @@ class AbecModel extends Model
             if (!empty($filters['id_tipo_sesion'])) {
                 $idTipo = (int)$filters['id_tipo_sesion'];
                 $builder->where('v.id_tipo_sesion', $idTipo);
-            }
-
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
+            
             $query = $builder->get();
-            $row = $query->getRowArray();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
+            $row = $query->getResultArray();
 
             // Normalizar resultado
             if (!$row) {
@@ -502,7 +535,7 @@ class AbecModel extends Model
             $builder->where('v.umae', 0);
 
             // filtros comunes
-            if (!empty($filters['anio'])) {
+            /*if (!empty($filters['anio'])) {
                 $anio = (int)$filters['anio'];
                 $fechaInicio = $anio."-01-01 00:00:00";
                 $fechaFin = $anio."-12-31 23:59:59";
@@ -516,10 +549,13 @@ class AbecModel extends Model
             }
             if (!empty($filters['id_tipo_sesion'])) {
                 $builder->where('v.id_tipo_sesion', (int)$filters['id_tipo_sesion']);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy('v.ooad');
+            $builder->orderBy('v.ooad', 'ASC');
             $query = $builder->get();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
             return $query->getResultArray();
 
         } catch (\Exception $e) {
@@ -529,7 +565,7 @@ class AbecModel extends Model
     }
 
     /**
-     * Estadísticas por UMAE (umae = true) agrupado por ooad, unidad
+     * Estadísticas por UMAE (umae = true) agrupado por anio, ooad, unidad
      */
     public function estadisticasPorUMAE(array $filters = []): array
     {
@@ -540,25 +576,12 @@ class AbecModel extends Model
             $builder->select("v.ooad, v.unidad, COUNT(DISTINCT v.id_abec_curso) AS total_course, COUNT(v.id_abec_alumno) AS total_student, COUNT(v.id_abec_alumno)/NULLIF(COUNT(DISTINCT v.id_abec_curso),0) AS porcentaje", false);
             $builder->where('v.umae', 1);
 
-            if (!empty($filters['anio'])) {
-                $anio = (int)$filters['anio'];
-                $fechaInicio = $anio."-01-01 00:00:00";
-                $fechaFin = $anio."-12-31 23:59:59";
-                $builder->where("v.fechaSesion BETWEEN '{$fechaInicio}' AND '{$fechaFin}'", null, false);
-            }
-            if (!empty($filters['id_ooad'])) {
-                $builder->where('v.del_cve', (int)$filters['id_ooad']);
-            }
-            if (!empty($filters['id_umae'])) {
-                $builder->where('v.sde_cve', (int)$filters['id_umae']);
-            }
-            if (!empty($filters['id_tipo_sesion'])) {
-                $builder->where('v.id_tipo_sesion', (int)$filters['id_tipo_sesion']);
-            }
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy(['v.ooad', 'v.unidad']);
             $builder->orderBy('v.ooad, v.unidad', 'ASC');
             $query = $builder->get();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
             return $query->getResultArray();
 
         } catch (\Exception $e) {
@@ -578,7 +601,7 @@ class AbecModel extends Model
 
             $builder->select('v.categoria, COUNT(v.categoria) AS total', false);
 
-            if (!empty($filters['anio'])) {
+            /*if (!empty($filters['anio'])) {
                 $anio = (int)$filters['anio'];
                 $fechaInicio = $anio."-01-01 00:00:00";
                 $fechaFin = $anio."-12-31 23:59:59";
@@ -593,12 +616,14 @@ class AbecModel extends Model
             }
             if (!empty($filters['id_tipo_sesion'])) {
                 $builder->where('v.id_tipo_sesion', (int)$filters['id_tipo_sesion']);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy('v.categoria');
             $builder->orderBy('total', 'DESC');
 
             $query = $builder->get();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
             return $query->getResultArray();
 
         } catch (\Exception $e) {
@@ -618,7 +643,7 @@ class AbecModel extends Model
 
             $builder->select('MONTH(v.fechaSesion) AS mes, COUNT(DISTINCT v.id_abec_curso) AS total_course, COUNT(v.id_abec_alumno) AS total_student', false);
 
-            if (!empty($filters['anio'])) {
+            /*if (!empty($filters['anio'])) {
                 $anio = (int)$filters['anio'];
                 $fechaInicio = $anio."-01-01 00:00:00";
                 $fechaFin = $anio."-12-31 23:59:59";
@@ -633,11 +658,13 @@ class AbecModel extends Model
             }
             if (!empty($filters['id_tipo_sesion'])) {
                 $builder->where('v.id_tipo_sesion', (int)$filters['id_tipo_sesion']);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy('MONTH(v.fechaSesion)');
             $builder->orderBy('mes', 'ASC');
             $query = $builder->get();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
             return $query->getResultArray();
 
         } catch (\Exception $e) {
@@ -657,7 +684,7 @@ class AbecModel extends Model
 
             $builder->select('v.sexo, COUNT(v.sexo) AS total', false);
 
-            if (!empty($filters['anio'])) {
+            /*if (!empty($filters['anio'])) {
                 $anio = (int)$filters['anio'];
                 $fechaInicio = $anio."-01-01 00:00:00";
                 $fechaFin = $anio."-12-31 23:59:59";
@@ -671,11 +698,13 @@ class AbecModel extends Model
             }
             if (!empty($filters['id_tipo_sesion'])) {
                 $builder->where('v.id_tipo_sesion', (int)$filters['id_tipo_sesion']);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy('v.sexo');
             $builder->orderBy('total', 'DESC');
             $query = $builder->get();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
             return $query->getResultArray();
 
         } catch (\Exception $e) {
@@ -695,7 +724,7 @@ class AbecModel extends Model
 
             $builder->select('v.id_abec_curso, v.fechaRegistro, v.folio, v.curso, v.fechaSesion, v.tipo_sesion, v.ooad, v.unidad, v.turno', false);
 
-            if (!empty($filters['anio'])) {
+            /*if (!empty($filters['anio'])) {
                 $anio = (int)$filters['anio'];
                 $fechaInicio = $anio."-01-01 00:00:00";
                 $fechaFin = $anio."-12-31 23:59:59";
@@ -709,7 +738,8 @@ class AbecModel extends Model
             }
             if (!empty($filters['id_tipo_sesion'])) {
                 $builder->where('v.id_tipo_sesion', (int)$filters['id_tipo_sesion']);
-            }
+            }*/
+            $this->aplicarFiltrosComunes($builder, $filters);
 
             $builder->groupBy(['v.id_abec_curso', 'v.fechaRegistro', 'v.folio', 'v.curso', 'v.fechaSesion', 'v.tipo_sesion', 'v.ooad', 'v.unidad', 'v.turno']);
             $query = $builder->get();
@@ -729,12 +759,35 @@ class AbecModel extends Model
         try {
             $db = \Config\Database::connect('dbces');
             $builder = $db->table('vw_abec_curso_alumno v');
-
+            
             $builder->select('v.id_abec_curso, v.id_abec_alumno, v.matricula, v.nombre_alumno, v.curp, v.categoria, v.subcategoria, v.especialidad, v.umae, v.sexo', false);
             $builder->where('v.id_abec_curso', $idAbecCurso);
             $builder->where('v.id_abec_alumno IS NOT NULL', null, false);
             
             $query = $builder->get();
+            return $query->getResultArray();
+
+        } catch (\Exception $e) {
+            log_message('error', 'Error en AbecModel::detalleAlumnosPorCurso: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Detalle de alumnos por curso
+     */
+    public function detalleAlumnos(array $filters = []): array
+    {
+        try {
+            $db = \Config\Database::connect('dbces');
+            $builder = $db->table('vw_abec_curso_alumno v');
+            
+            $builder->select('v.id_abec_curso, v.id_abec_alumno, v.matricula, v.nombre_alumno, v.curp, v.categoria, v.subcategoria, v.especialidad, v.umae, v.sexo', false);
+
+            $this->aplicarFiltrosComunes($builder, $filters);
+            
+            $query = $builder->get();
+            //echo (string)$db->getLastQuery(); exit(); // Debug: muestra la consulta SQL generada
             return $query->getResultArray();
 
         } catch (\Exception $e) {
